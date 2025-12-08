@@ -1,4 +1,4 @@
-import { generertravaux } from "./function.js"
+import { generertravaux, activeButton } from "./function.js"
 
 // Variable tableau pour stocker les travaux
 let travaux = []
@@ -22,9 +22,11 @@ fetch("http://localhost:5678/api/categories")
         // créer le bouton "Tous"
         const btnTous = document.createElement("button")
         btnTous.innerText = "Tous"
+        btnTous.classList.add("filter-button", "filter-active") // Ajout des 2 classes CSS
         // Au clic on affiche TOUS les travaux
         btnTous.addEventListener("click", () => {
             generertravaux(travaux)
+            activeButton(btnTous)
         })
 
         filtresContainer.appendChild(btnTous)
@@ -33,6 +35,7 @@ fetch("http://localhost:5678/api/categories")
         for (const category of categories) {
             const btn = document.createElement("button")
             btn.innerText = category.name // "Objets", "Appartements", etc...
+            btn.classList.add("filter-button") // Ajout de la classe CSS d'orrigine
 
             // évenement pour filtrer au clic
             btn.addEventListener("click", () => {
@@ -41,6 +44,7 @@ fetch("http://localhost:5678/api/categories")
                 
                 // donner cette liste filtrée à la fonction d'affichage
                 generertravaux(travauxFiltres)
+                activeButton(btn)
             })
 
             filtresContainer.appendChild(btn)

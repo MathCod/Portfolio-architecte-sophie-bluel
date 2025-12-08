@@ -22,3 +22,15 @@ export function generertravaux(listeTravaux) {
         gallery.appendChild(figure)
     }
 }
+
+// Fonction pour gérer l'état actif des boutons de filtre
+export function activeButton(targetButton) {
+    // On récupère tous les boutons
+    const buttons = document.querySelectorAll(".filter-button");
+    
+    // On enlève la classe verte partout
+    buttons.forEach(btn => btn.classList.remove("filter-active"));
+
+    // On l'ajoute UNIQUEMENT sur le bouton cliqué
+    targetButton.classList.add("filter-active");
+}
