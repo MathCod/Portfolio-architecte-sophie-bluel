@@ -1,5 +1,5 @@
 /**
- * 
+ * ce fichier gère la connexion des utilisateurs
  * 
  * 
  */

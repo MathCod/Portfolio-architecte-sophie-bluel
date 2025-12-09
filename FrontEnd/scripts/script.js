@@ -1,7 +1,7 @@
-import { generertravaux, activeButton } from "./function.js"
+import { generertravaux, activeButton, checkAdmin } from "./function.js"
 
 /**
- * 
+ * ce fichier contient le script principal
  * 
  * 
  */
@@ -56,3 +56,5 @@ fetch("http://localhost:5678/api/categories")
             filtresContainer.appendChild(btn)
         }
     })
+
+    checkAdmin()
