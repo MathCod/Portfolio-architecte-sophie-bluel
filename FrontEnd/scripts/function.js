@@ -1,3 +1,9 @@
+/**
+ * Cette fonction permmet de générer la galerie de travaux
+ * @param {[Object]} listeTravaux
+ * 
+ */
+
 export function generertravaux(listeTravaux) {
     const gallery = document.querySelector(".gallery")
     gallery.innerHTML = "" // Vider la galerie avant de la remplir

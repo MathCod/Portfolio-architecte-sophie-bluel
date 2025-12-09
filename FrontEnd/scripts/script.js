@@ -1,5 +1,11 @@
 import { generertravaux, activeButton } from "./function.js"
 
+/**
+ * 
+ * 
+ * 
+ */
+
 // Variable tableau pour stocker les travaux
 let travaux = []
 
