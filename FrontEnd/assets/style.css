@@ -110,7 +110,8 @@ nav a {
 }
 
 nav li a:hover, nav li:hover {
-	color: var(--secondary-color);
+	color: black;
+	font-weight: bold;
 }
 #introduction {
 	display: flex;
