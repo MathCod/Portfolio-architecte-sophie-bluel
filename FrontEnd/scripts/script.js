@@ -3,7 +3,7 @@
  * @description Ce fichier contient le coeur de la page d'acceuil
  */
 
-import { generertravaux, activeButton, checkAdmin } from "./function.js"
+import { generertravaux, activeButton, checkAdmin, genererModalGallery, setupModal } from "./function.js"
 
 // Variable tableau pour stocker les travaux
 let travaux = []
@@ -57,3 +57,5 @@ fetch("http://localhost:5678/api/categories")
     })
 
     checkAdmin()
+    setupModal()
+    genererModalGallery(listeTravaux)

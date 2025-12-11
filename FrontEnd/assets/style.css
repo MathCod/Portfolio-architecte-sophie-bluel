@@ -8,7 +8,7 @@
   --main-color: #1D6154;
   --secondary-color: #B1663C;
   --white-color: #ffffff;
-  ---background-color: #FFFEF8;
+  --background-color: #FFFEF8;
 }
 
 html, body, div, span, applet, object, iframe,
@@ -38,7 +38,7 @@ footer, header, hgroup, menu, nav, section {
 }
 body {
 	line-height: 1;
-	background-color: var(---background-color);
+	background-color: var(--background-color);
 }
 ol, ul {
 	list-style: none;
@@ -333,4 +333,71 @@ footer nav ul {
 
 .modify-btn:hover {
     text-decoration: underline;
+}
+
+/* --- MODALE --- */
+
+/* Le fond grisé derrière la fenêtre */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3); /* Fond noir transparent */
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+/* La fenêtre blanche elle-même */
+.modal-wrapper {
+    background-color: white;
+    width: 630px;
+    padding: 60px 100px;
+    border-radius: 10px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* La croix de fermeture */
+.js-modal-close {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.modal h3 {
+    font-family: 'Work Sans';
+    font-size: 26px;
+    font-weight: 400;
+    color: black;
+    margin-bottom: 40px;
+}
+
+/* La ligne grise de séparation */
+.modal-line {
+    border-top: 1px solid #B3B3B3;
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+/* Le bouton vert "Ajouter une photo" */
+.btn-add-photo {
+    font-family: 'Syne';
+    font-weight: 700;
+    color: white;
+    background-color: var(--main-color);
+    padding: 10px 50px;
+    border: none;
+    border-radius: 60px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-bottom: 25px;
 }

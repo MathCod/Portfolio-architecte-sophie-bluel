@@ -2,6 +2,11 @@
  * @file function.js
  * @description Ce fichier contient toutes les fonctions utilitaires pour la galerie et les filtres.
  */
+
+/* -------------------------------------------------------------------------- */
+/*                                   GALERIE                                  */
+/* -------------------------------------------------------------------------- */
+
 /**
  * Génère et affiche la galerie de travaux dans le DOM.
  * @param {Array} listeTravaux - Le tableau d'objets contenant les travaux.
@@ -33,6 +38,40 @@ export function generertravaux(listeTravaux) {
 }
 
 /**
+ * Génère la galerie miniature dans la modale (avec icônes poubelle).
+ * @param {Array} listeTravaux - La liste des projets
+ */
+export function genererModalGallery(listeTravaux) {
+    const modalGallery = document.querySelector(".modal-gallery")
+    modalGallery.innerHTML = "" // On vide d'abord
+
+    for (const work of listeTravaux) {
+        const figure = document.createElement("figure")
+        figure.classList.add("modal-figure")
+
+        const img = document.createElement("img")
+        img.src = work.imageUrl
+        img.alt = work.title
+
+        const iconContainer = document.createElement("div")
+        iconContainer.classList.add("trash-container")
+        
+        const icon = document.createElement("i")
+        icon.classList.add("fa-solid", "fa-trash-can")
+
+        iconContainer.appendChild(icon)
+        figure.appendChild(img)
+        figure.appendChild(iconContainer)
+        
+        modalGallery.appendChild(figure)
+    }
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                   FILTRES                                  */
+/* -------------------------------------------------------------------------- */
+
+/**
  * Gère l'état actif des boutons de filtre.
  * @param {HTMLElement} targetButton - Le bouton sur lequel on clique.
  */
@@ -49,6 +88,10 @@ export function activeButton(targetButton) {
     targetButton.classList.add("filter-active")
 }
 
+/* -------------------------------------------------------------------------- */
+/*                               ADMIN / MODALE                               */
+/* -------------------------------------------------------------------------- */
+
 /**
  * Vérifie si l'utilisateur est admin (Token présent).
  * Si oui : affiche la bannière, le bouton logout et le bouton modifier.
@@ -56,6 +99,7 @@ export function activeButton(targetButton) {
 
 export function checkAdmin() {
     const token = localStorage.getItem("token")
+    // Si l'utilisateur est connecté (token présent)
     if (token) {
     // On change "login" en "logout"
     const loginLink = document.querySelector("#login-link")
@@ -84,7 +128,7 @@ export function checkAdmin() {
         filters.style.display = "none"
     }
 
-    // On ajoute le bouton "Modifier" à côté du titre "Mes Projets"
+    // On ajoute le bouton "Modifier" et ouverture de la Modale
     const portfolioTitle = document.querySelector("#portfolio h2")
     if (portfolioTitle) {
         const modifyBtn = document.createElement("button")
@@ -93,12 +137,41 @@ export function checkAdmin() {
         
         // On insère le bouton juste après le titre
         portfolioTitle.appendChild(modifyBtn)
-        
-        // Ouvre la modale au clic
+
+        // Clic sur "Modifier" -> Ouvre la modale
         modifyBtn.addEventListener("click", () => {
             const modal = document.querySelector("#modal")
             modal.style.display = "flex"
             modal.setAttribute("aria-hidden", "false")
         })
-    }}
+        }
+        // Initialisation de la fermeture de la modale
+        setupModal()
+    }
+}
+
+/**
+ * Initialise les événements de la modale (Fermeture).
+ * Cette fonction est appelée uniquement si l'admin est connecté.
+ */
+
+export function setupModal() {
+    const modal = document.querySelector("#modal")
+    const closeBtn = document.querySelector(".js-modal-close")
+
+    // Fonction pour fermer la modale
+    const closeModal = () => {
+        modal.style.display = "none"
+        modal.setAttribute("aria-hidden", "true")
+    }
+
+    // Sélectionner la croix
+    closeBtn.addEventListener("click", closeModal)
+
+    // Clic en dehors de la fenêtre (sur le fond gris)
+    modal.addEventListener("click", (event) => {
+        if (event.target === modal) {
+            closeModal()
+        }
+    })
 }
