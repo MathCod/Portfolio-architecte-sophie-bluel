@@ -1,11 +1,8 @@
 /**
- * ce fichier contient Les fonctions
- * Cette fonction permmet de générer la galerie de travaux
- * @param {[Object]} listeTravaux
- * Cette fonction permet de gérer l'état actif des boutons de filtre
- * @param {HTMLElement} targetButton
- * Cette fonction vérifie si l'utilisateur est admin et adapte l'interface en conséquence
- * @param {Function} checkAdmin
+ * @file function.js
+ * @description Ce fichier contient toutes les fonctions utilitaires pour la galerie et les filtres.
+ * 
+ * @param {[Object]} listeTravaux - Le tableau d'objets. Cette fonction permmet de générer la galerie de travaux.
  */
 
 export function generertravaux(listeTravaux) {
@@ -33,6 +30,10 @@ export function generertravaux(listeTravaux) {
     }
 }
 
+/**
+ * @param {HTMLElement} targetButton - Cette fonction permet de gérer l'état actif des boutons de filtre.
+ */
+
 // Fonction pour gérer l'état actif des boutons de filtre
 export function activeButton(targetButton) {
     // On récupère tous les boutons
@@ -44,6 +45,10 @@ export function activeButton(targetButton) {
     // On l'ajoute UNIQUEMENT sur le bouton cliqué
     targetButton.classList.add("filter-active")
 }
+
+/**
+ * @param {Function} checkAdmin - Cette fonction vérifie si l'utilisateur est admin et adapte l'interface en conséquence.
+ */
 
 export function checkAdmin() {
     const token = localStorage.getItem("token")

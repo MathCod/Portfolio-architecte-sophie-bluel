@@ -1,10 +1,9 @@
-import { generertravaux, activeButton, checkAdmin } from "./function.js"
-
 /**
- * ce fichier contient le script principal
- * 
- * 
+ * @file script.js
+ * @description Ce fichier contient le coeur de la page d'acceuil
  */
+
+import { generertravaux, activeButton, checkAdmin } from "./function.js"
 
 // Variable tableau pour stocker les travaux
 let travaux = []

@@ -1,7 +1,8 @@
 /**
- * ce fichier gère la connexion des utilisateurs
+ * @file login.js
+ * @description Ce fichier contient le script pour la page de login.
  * 
- * 
+ * @param {form} addEventListener - Gère la soumission du formulaire de login.
  */
 
 // On sélectionne le formulaire
