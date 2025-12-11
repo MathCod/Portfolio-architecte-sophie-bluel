@@ -1,8 +1,7 @@
 /**
  * @file login.js
  * @description Ce fichier contient le script pour la page de login.
- * 
- * @param {form} addEventListener - Gère la soumission du formulaire de login.
+ * Effectue l'appel API (POST), stocke le Token et redirige vers l'accueil.
  */
 
 // On sélectionne le formulaire

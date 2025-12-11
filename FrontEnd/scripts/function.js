@@ -1,8 +1,10 @@
 /**
  * @file function.js
  * @description Ce fichier contient toutes les fonctions utilitaires pour la galerie et les filtres.
- * 
- * @param {[Object]} listeTravaux - Le tableau d'objets. Cette fonction permmet de générer la galerie de travaux.
+ */
+/**
+ * Génère et affiche la galerie de travaux dans le DOM.
+ * @param {Array} listeTravaux - Le tableau d'objets contenant les travaux.
  */
 
 export function generertravaux(listeTravaux) {
@@ -31,7 +33,8 @@ export function generertravaux(listeTravaux) {
 }
 
 /**
- * @param {HTMLElement} targetButton - Cette fonction permet de gérer l'état actif des boutons de filtre.
+ * Gère l'état actif des boutons de filtre.
+ * @param {HTMLElement} targetButton - Le bouton sur lequel on clique.
  */
 
 // Fonction pour gérer l'état actif des boutons de filtre
@@ -47,7 +50,8 @@ export function activeButton(targetButton) {
 }
 
 /**
- * @param {Function} checkAdmin - Cette fonction vérifie si l'utilisateur est admin et adapte l'interface en conséquence.
+ * Vérifie si l'utilisateur est admin (Token présent).
+ * Si oui : affiche la bannière, le bouton logout et le bouton modifier.
  */
 
 export function checkAdmin() {
@@ -90,9 +94,11 @@ export function checkAdmin() {
         // On insère le bouton juste après le titre
         portfolioTitle.appendChild(modifyBtn)
         
-        // C'est ce bouton qui ouvrira la modale plus tard !
+        // Ouvre la modale au clic
         modifyBtn.addEventListener("click", () => {
-            console.log("Ouverture de la modale...")
+            const modal = document.querySelector("#modal")
+            modal.style.display = "flex"
+            modal.setAttribute("aria-hidden", "false")
         })
     }}
 }

@@ -56,6 +56,24 @@
 	</section>
 </main>
 
+	<!-- LA MODALE (Cachée par défaut avec aria-hidden="true" et style="display: none;") -->
+	<div id="modal" class="modal" aria-hidden="true" role="dialog">
+		<div class="modal-wrapper">
+			<!-- Bouton fermer (Croix) -->
+			<button type="button" class="js-modal-close"><i class="fa-solid fa-xmark"></i></button>
+			
+			<h3 id="modal-title">Galerie photo</h3>
+			
+			<!-- Ici on affichera les miniatures à supprimer -->
+			<div class="modal-gallery"></div>
+			
+			<div class="modal-line"></div>
+			
+			<button type="button" class="btn-add-photo">Ajouter une photo</button>
+			<a href="#" class="delete-gallery-link">Supprimer la galerie</a>
+		</div>
+	</div>
+
 <footer>
 	<nav>
 		<ul>
@@ -63,5 +81,6 @@
 		</ul>
 	</nav>
 </footer>
+
 </body>
 </html>
