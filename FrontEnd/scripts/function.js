@@ -59,6 +59,43 @@ export function genererModalGallery(listeTravaux) {
         const icon = document.createElement("i")
         icon.classList.add("fa-solid", "fa-trash-can")
 
+        // Gestion du click sur la poubelle
+        iconContainer.addEventListener("click", (e) => {
+            e.preventDefault()
+
+            // Demande de confirmation
+            const confirmation = confirm("Voulez-vous vraiment supprimer ce projet ?")
+            if (confirmation) {
+                
+                // Récupération du Token (Indispensable pour avoir le droit de supprimer)
+                const token = localStorage.getItem("token")
+
+                // Requete DELETE à l'API
+                fetch(`http://localhost:5678/api/works/${work.id}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": `Bearer ${token}`, // On montre le token
+                        "Content-Type": "application/json"
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // On supprime l'élément de la modale visuellement
+                        figure.remove() 
+                        alert("Projet supprimé avec succès !")
+                        
+                        // (Optionnel) Pour mettre à jour la galerie principale sans recharger la page :
+                        // Tu pourrais relancer un fetch global ici, mais figure.remove() suffit pour l'instant.
+                    } else {
+                        alert("Erreur lors de la suppression")
+                    }
+                })
+                .catch(error => console.error("Erreur :", error))
+            }
+        })
+        // ----------------------------------------
+
+
         iconContainer.appendChild(icon)
         figure.appendChild(img)
         figure.appendChild(iconContainer)
@@ -182,4 +219,29 @@ export function setupModal() {
         closeModal(e)
         }
     })
+}
+
+/**
+ * Gère la navigation entre la galerie et l'ajout de photo dans la modale.
+ */
+export function setupModalNavigation() {
+    const btnAddPhoto = document.querySelector(".btn-add-photo")
+    const btnBack = document.querySelector(".js-modal-back")
+    const galleryView = document.querySelector(".modal-gallery-view")
+    const addView = document.querySelector(".modal-add-view")
+
+    // Aller vers la modale d'ajout
+    btnAddPhoto.addEventListener("click", () => {
+        galleryView.style.display = "none"
+        addView.style.display = "flex" // "flex" pour que le formulaire soit bien centré
+        addView.style.flexDirection = "column" // Important pour le form
+        btnBack.style.display = "block" // La flèche apparaît
+    });
+
+    // 2. Retourner vers la galerie
+    btnBack.addEventListener("click", () => {
+        galleryView.style.display = "block";
+        addView.style.display = "none";
+        btnBack.style.display = "none"; // La flèche disparaît
+    });
 }

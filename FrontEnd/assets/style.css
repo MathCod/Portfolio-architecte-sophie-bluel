@@ -337,6 +337,7 @@ footer nav ul {
 }
 
 /* --- MODALE --- */
+/* --- VUE 1: Gallerie --- */
 
 /* Le fond grisé derrière la fenêtre */
 .modal {
@@ -355,10 +356,17 @@ footer nav ul {
 .modal-wrapper {
     background-color: var(--background-color);
     overflow: auto;
-    width: 600px;
+    width: 550px;
     padding: 30px 100px;
     border-radius: 10px;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.modal-gallery-view {
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -392,6 +400,7 @@ footer nav ul {
 
 /* Le bouton vert "Ajouter une photo" */
 .btn-add-photo {
+    display: flex;
     font-family: 'Syne';
     font-weight: 700;
     color: var(--background-color);
@@ -402,6 +411,7 @@ footer nav ul {
     cursor: pointer;
     font-size: 14px;
     margin-bottom: 20px;
+    align-items: center;
 }
 
 /* --- GALERIE MINIATURE (DANS LA MODALE) --- */
@@ -411,7 +421,7 @@ footer nav ul {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 10px;
-    width: 80%;
+    width: 100%;
 }
 
 /* Le cadre de chaque image */
@@ -446,4 +456,110 @@ footer nav ul {
 .trash-container i {
     color: var(--background-color);
     font-size: 12px;
+}
+
+/* --- VUE 2: formulaire d'ajout --- */
+
+.modal-add-view, .photo-preview, #photo-input, .js-modal-back {
+    display: none;
+}
+
+/* La flèche retour */
+.js-modal-back {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* Le carré bleu pour l'upload */
+.add-photo-container {
+    background-color: #E8F1F6;
+    width: 100%;
+    height: 170px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+    border-radius: 3px;
+    position: relative; /* Pour l'image preview */
+}
+
+.add-photo-container i {
+    font-size: 60px;
+    color: #B9C5CC;
+    margin-bottom: 15px;
+}
+
+.add-photo-container p {
+    font-size: 10px;
+    color: #444;
+    margin-top: 10px;
+}
+
+/* Le bouton "+ Ajouter photo" */
+.btn-upload {
+    background-color: #CBD6DC;
+    color: #306685;
+    font-family: 'Work Sans';
+    font-weight: 500;
+    padding: 10px 33px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-upload:hover {
+    background-color: #B9C5CC;
+}
+
+/* L'image de prévisualisation (remplit tout le cadre) */
+.photo-preview {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* L'image s'adapte sans être coupée */
+}
+
+/* Les Inputs */
+.add-photo-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.add-photo-form label {
+    margin-bottom: 10px;
+    font-weight: 500;
+    color: #3D3D3D;
+    text-align: left;
+}
+
+.add-photo-form input[type="text"], 
+.add-photo-form select {
+    height: 50px;
+    border: none;
+    box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+    margin-bottom: 20px;
+    padding-left: 20px;
+    font-size: 14px;
+    background-color: var(--white-color);
+}
+
+/* Le bouton Valider Gris par défaut */
+#btn-validate {
+    background-color: #A7A7A7;
+    cursor: not-allowed;
+    width: 180px;
+    align-self: center; /* Centré */
+}
+
+/* Le bouton Valider vert activé via JS*/
+#btn-validate.valid {
+    background-color: var(--main-color);
+    cursor: pointer;
 }
