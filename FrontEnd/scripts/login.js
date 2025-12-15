@@ -7,8 +7,8 @@
 // On sélectionne le formulaire
 const form = document.querySelector("#login-form")
 
-form.addEventListener("submit", (event) => {
-    event.preventDefault()
+form.addEventListener("submit", (e) => {
+    e.preventDefault()
 
     // On récupère les valeurs des champs
     const email = document.querySelector("#email").value

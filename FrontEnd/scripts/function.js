@@ -106,8 +106,8 @@ export function checkAdmin() {
     loginLink.innerHTML = '<a href="#">logout</a>'
     
     // On gère la déconnexion au clic
-    loginLink.addEventListener("click", (event) => {
-        event.preventDefault()
+    loginLink.addEventListener("click", (e) => {
+        e.preventDefault()
         localStorage.removeItem("token") // On supprime le token
         window.location.reload() // On recharge la page (redevient visiteur)
     })
@@ -169,9 +169,17 @@ export function setupModal() {
     closeBtn.addEventListener("click", closeModal)
 
     // Clic en dehors de la fenêtre (sur le fond gris)
-    modal.addEventListener("click", (event) => {
-        if (event.target === modal) {
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
             closeModal()
+        }
+    })
+
+    // Ecoute le clavier et ferme la modalle avec Echap
+    window.addEventListener("keydown", function (e) {
+        // console.log(e.key) affiche la touche utilisée dans la console pour connaitre son nom
+    if (e.key === "Escape" || e.key === "Esc") {
+        closeModal(e)
         }
     })
 }
