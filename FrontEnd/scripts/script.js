@@ -3,7 +3,13 @@
  * @description Ce fichier contient le coeur de la page d'acceuil
  */
 
-import { generertravaux, activeButton, checkAdmin, genererModalGallery, setupModalNavigation} from "./function.js"
+import { 
+    generertravaux, 
+    activeButton, 
+    checkAdmin, 
+    genererModalGallery, 
+    setupModalNavigation
+} from "./function.js"
 
 // Variable tableau pour stocker les travaux
 let travaux = []

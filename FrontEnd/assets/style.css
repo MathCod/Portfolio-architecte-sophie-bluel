@@ -354,7 +354,7 @@ footer nav ul {
 
 /* La fenêtre blanche elle-même */
 .modal-wrapper {
-    background-color: var(--background-color);
+    background-color: var(--white-color);
     overflow: auto;
     width: 550px;
     padding: 30px 100px;
@@ -385,6 +385,7 @@ footer nav ul {
 
 .modal h3 {
     font-family: 'Work Sans';
+    text-align: center;
     font-size: 26px;
     font-weight: 400;
     color: var(--color-black);
@@ -464,6 +465,10 @@ footer nav ul {
     display: none;
 }
 
+.modal-add-view {
+    width: 80%;
+}
+
 /* La flèche retour */
 .js-modal-back {
     position: absolute;
@@ -535,7 +540,6 @@ footer nav ul {
 .add-photo-form label {
     margin-bottom: 10px;
     font-weight: 500;
-    color: #3D3D3D;
     text-align: left;
 }
 

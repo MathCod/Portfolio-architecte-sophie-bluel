@@ -235,12 +235,12 @@ export function setupModalNavigation() {
         galleryView.style.display = "none"
         addView.style.display = "flex" // "flex" pour que le formulaire soit bien centré
         addView.style.flexDirection = "column" // Important pour le form
-        btnBack.style.display = "block" // La flèche apparaît
+        btnBack.style.display = "flex" // La flèche apparaît
     });
 
     // 2. Retourner vers la galerie
     btnBack.addEventListener("click", () => {
-        galleryView.style.display = "block";
+        galleryView.style.display = "flex";
         addView.style.display = "none";
         btnBack.style.display = "none"; // La flèche disparaît
     });
