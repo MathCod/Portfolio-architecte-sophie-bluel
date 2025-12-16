@@ -48,6 +48,12 @@ form.addEventListener("submit", (e) => {
     .catch(error => {
         // Gestion des erreurs
         console.error(error)
-        alert("Erreur : email ou mot de passe incorrect.")
+        let errorBalise = document.createElement("p")
+        let errorText = document.querySelector(".error-text")
+        errorText.innerHTML = "" // On vide tout ce qu'il y a dedans avant de recommencer
+        errorBalise.innerHTML = `E-mail ou mot de passe incorrect.`
+        errorBalise.style.color = "red"
+        errorBalise.style.fontStyle = "italic"
+        errorText.appendChild(errorBalise)
     })
 })
