@@ -10,7 +10,7 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
-	<script type="module" src="./scripts/script.js" defer></script>
+	<script type="module" src="./scripts/script.js"></script>
 </head>
 <body>
 <header>
@@ -25,7 +25,7 @@
 	</nav>
 </header>
 <main>
-	<section id="introduction">
+	<div id="introduction">
 		<figure>
 			<img src="./assets/images/sophie-bluel.png" alt="">
 		</figure>
@@ -35,7 +35,7 @@
 			<p>Chaque projet sera étudié en commun, de façon à mettre en valeur les volumes, les matières et les couleurs dans le respect de l’esprit des lieux et le choix adapté des matériaux. Le suivi du chantier sera assuré dans le souci du détail, le respect du planning et du budget.</p>
 			<p>En cas de besoin, une équipe pluridisciplinaire peut-être constituée : architecte DPLG, décorateur(trice)</p>
 		</article>
-	</section>
+	</div>
 	<section id="portfolio">
 		<h2>Mes Projets</h2>
 		<div class="filters"></div>
@@ -57,7 +57,7 @@
 </main>
 
 	<!-- LA MODALE (Cachée par défaut avec aria-hidden="true" et style="display: none;") -->
-	<aside id="modal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modal-title">
+	<dialog id="modal" class="modal" aria-hidden="true" aria-labelledby="modal-title">
 		<div class="modal-wrapper">
 			<!-- Bouton fermer (Croix) -->
 			<button type="button" class="js-modal-close"><i class="fa-solid fa-xmark"></i></button>
@@ -65,7 +65,7 @@
 			
 			<!-- VUE 1 : GALERIE -->
 			<div class="modal-gallery-view">	
-				<h3 class="modal-title">Galerie photo</h3>
+				<h3 id="modal-title">Galerie photo</h3>
 				<div class="modal-gallery"></div>
 				<div class="modal-line"></div>
 				<div class="delete-text"></div> <br>
@@ -94,7 +94,7 @@
 
 					<label for="photo-category">Catégorie</label>
 					<select name="category" id="photo-category">
-						<option value="" disabled selected></option>
+						<option value="" disabled selected>Choisir une catégorie</option>
 					</select>
 
 					<div class="modal-line"></div>
@@ -103,7 +103,7 @@
 				</form>
 			</div>
 		</div>
-	</aside>
+	</dialog>
 
 <footer>
 	<nav>
@@ -115,3 +115,6 @@
 
 </body>
 </html>
+
+
+<!-- npx http-server -p 8080 -->

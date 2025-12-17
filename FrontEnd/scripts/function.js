@@ -3,6 +3,10 @@
  * @description Ce fichier contient toutes les fonctions utilitaires pour la galerie et les filtres.
  */
 
+import { 
+    fetchCategories,
+ } from "./API.js"
+
 /* -------------------------------------------------------------------------- */
 /*                                   GALERIE                                  */
 /* -------------------------------------------------------------------------- */
@@ -260,9 +264,7 @@ export function setupAddPhoto() {
     const selectCategory = document.querySelector("#photo-category")
     
     // On réutilise l'API pour avoir les catégories à jour
-    fetch("http://localhost:5678/api/categories")
-        .then(response => response.json())
-        .then(categories => {
+    fetchCategories().then(categories => {
             // On vide le select pour ne garder que l'option par défaut
             selectCategory.innerHTML = '<option value="" disabled selected>Choisissez une catégorie</option>'
             
@@ -402,8 +404,8 @@ export function setupAddPhoto() {
         .then(data => {
             // Si on a bien reçu les nouvelles données, on met à jour les deux galeries
             if (data) {
-                generertravaux(data);       // Met à jour la page d'accueil
-                genererModalGallery(data);  // Met à jour la galerie de la modale
+                generertravaux(data)       // Met à jour la page d'accueil
+                genererModalGallery(data)  // Met à jour la galerie de la modale
             }
         })
         .catch(error => console.error("Erreur :", error))
