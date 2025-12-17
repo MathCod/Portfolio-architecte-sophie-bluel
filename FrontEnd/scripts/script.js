@@ -8,7 +8,8 @@ import {
     activeButton, 
     checkAdmin, 
     genererModalGallery, 
-    setupModalNavigation
+    setupModalNavigation,
+    setupAddPhoto
 } from "./function.js"
 
 // Variable tableau pour stocker les travaux
@@ -65,3 +66,4 @@ fetch("http://localhost:5678/api/categories")
 
     checkAdmin()
     setupModalNavigation()
+    setupAddPhoto()

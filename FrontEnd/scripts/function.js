@@ -11,7 +11,6 @@
  * Génère et affiche la galerie de travaux dans le DOM.
  * @param {Array} listeTravaux - Le tableau d'objets contenant les travaux.
  */
-
 export function generertravaux(listeTravaux) {
     const gallery = document.querySelector(".gallery")
     gallery.innerHTML = "" // Vider la galerie avant de la remplir
@@ -81,11 +80,21 @@ export function genererModalGallery(listeTravaux) {
                 .then(response => {
                     if (response.ok) {
                         // On supprime l'élément de la modale visuellement
-                        figure.remove() 
-                        alert("Projet supprimé avec succès !")
-                        
-                        // (Optionnel) Pour mettre à jour la galerie principale sans recharger la page :
-                        // Tu pourrais relancer un fetch global ici, mais figure.remove() suffit pour l'instant.
+                        figure.remove()
+                        // alert("Projet supprimé avec succès !")
+                    const deleteText = document.querySelector(".delete-text")
+                    if (deleteText) {
+                    deleteText.innerHTML = "Projet supprimé avec succès !"
+                    deleteText.style.color = "#1D6154"
+                    deleteText.style.fontWeight = "700"
+                    deleteText.style.textAlign = "center"
+                    deleteText.style.marginTop = "15px"
+
+                    // On efface le message après 5 secondes
+                    setTimeout(() => {
+                        deleteText.innerHTML = ""
+                    }, 5000)
+                }
                     } else {
                         alert("Erreur lors de la suppression")
                     }
@@ -112,7 +121,6 @@ export function genererModalGallery(listeTravaux) {
  * Gère l'état actif des boutons de filtre.
  * @param {HTMLElement} targetButton - Le bouton sur lequel on clique.
  */
-
 // Fonction pour gérer l'état actif des boutons de filtre
 export function activeButton(targetButton) {
     // On récupère tous les boutons
@@ -133,7 +141,6 @@ export function activeButton(targetButton) {
  * Vérifie si l'utilisateur est admin (Token présent).
  * Si oui : affiche la bannière, le bouton logout et le bouton modifier.
  */
-
 export function checkAdmin() {
     const token = localStorage.getItem("token")
     // Si l'utilisateur est connecté (token présent)
@@ -191,7 +198,6 @@ export function checkAdmin() {
  * Initialise les événements de la modale (Fermeture).
  * Cette fonction est appelée uniquement si l'admin est connecté.
  */
-
 export function setupModal() {
     const modal = document.querySelector("#modal")
     const closeBtn = document.querySelector(".js-modal-close")
@@ -236,12 +242,170 @@ export function setupModalNavigation() {
         addView.style.display = "flex" // "flex" pour que le formulaire soit bien centré
         addView.style.flexDirection = "column" // Important pour le form
         btnBack.style.display = "flex" // La flèche apparaît
-    });
+    })
 
     // 2. Retourner vers la galerie
     btnBack.addEventListener("click", () => {
-        galleryView.style.display = "flex";
-        addView.style.display = "none";
-        btnBack.style.display = "none"; // La flèche disparaît
-    });
+        galleryView.style.display = "flex"
+        addView.style.display = "none"
+        btnBack.style.display = "none" // La flèche disparaît
+    })
+}
+
+/**
+ * Gère le formulaire d'ajout (Prévisualisation, Catégories, Validation).
+ */
+export function setupAddPhoto() {
+    // Remplir les catégories
+    const selectCategory = document.querySelector("#photo-category")
+    
+    // On réutilise l'API pour avoir les catégories à jour
+    fetch("http://localhost:5678/api/categories")
+        .then(response => response.json())
+        .then(categories => {
+            // On vide le select pour ne garder que l'option par défaut
+            selectCategory.innerHTML = '<option value="" disabled selected>Choisissez une catégorie</option>'
+            
+            categories.forEach(category => {
+                const option = document.createElement("option")
+                option.value = category.id
+                option.innerText = category.name
+                selectCategory.appendChild(option)
+            })
+        })
+
+    // Prévisualisation de l'image
+    const inputPhoto = document.querySelector("#photo-input")
+    const previewImg = document.querySelector(".photo-preview")
+    const container = document.querySelector(".add-photo-container")
+    const icon = document.querySelector(".add-photo-container i")
+    const label = document.querySelector(".add-photo-container label")
+    const textInfo = document.querySelector(".add-photo-container p")
+
+    inputPhoto.addEventListener("change", () => {
+        const file = inputPhoto.files[0]
+        
+        if (file) {
+            // Vérification de la taille (4mo max)
+            if (file.size > 4 * 1024 * 1024) {
+                alert("L'image est trop volumineuse (max 4Mo)")
+                inputPhoto.value = "" // On vide l'input
+                return
+            }
+
+            // On lit le fichier pour l'afficher
+            const reader = new FileReader()
+            reader.onload = (e) => {
+                previewImg.src = e.target.result
+                previewImg.style.display = "block" // On affiche l'image
+                
+                // On cache les éléments derrière (icône, bouton, texte)
+                icon.style.display = "none"
+                label.style.display = "none"
+                textInfo.style.display = "none"
+            }
+            reader.readAsDataURL(file)
+        }
+    })
+
+    // Vérification du formulaire (Bouton Gris/Vert)
+    const inputTitle = document.querySelector("#photo-title")
+    const btnValidate = document.querySelector("#btn-validate")
+
+    // Fonction qui vérifie si tout est rempli
+    const checkForm = () => {
+        // Est-ce qu'on a une image, un titre ET une catégorie ?
+        if (inputPhoto.files[0] && inputTitle.value !== "" && selectCategory.value !== "") {
+            btnValidate.removeAttribute("disabled")
+            btnValidate.classList.add("valid") // Deviens vert (grâce au CSS)
+        } else {
+            btnValidate.setAttribute("disabled", "true")
+            btnValidate.classList.remove("valid") // Redeviens gris
+        }
+    }
+
+    // On écoute les changements sur les 3 champs
+    inputPhoto.addEventListener("change", checkForm)
+    inputTitle.addEventListener("input", checkForm)
+    selectCategory.addEventListener("change", checkForm)
+
+    // --- Envoi du formulaire --- //
+
+    const form = document.querySelector(".add-photo-form")
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault()
+        const token = localStorage.getItem("token")
+
+        // On crée un objet FormData pour envoyer le fichier + les textes
+        const formData = new FormData()
+        formData.append("image", inputPhoto.files[0])
+        formData.append("title", inputTitle.value)
+        formData.append("category", selectCategory.value)
+
+        // Appel API
+        fetch("http://localhost:5678/api/works", {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`
+                //  Pas besoin de "Content-Type" ici, Le navigateur le fait tout seul pour le FormData
+            },
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                const photoText = document.querySelector(".succes")
+                if (photoText) {
+                    photoText.innerHTML = "Projet ajouté avec succès !"
+                    photoText.style.color = "#1D6154"
+                    photoText.style.fontWeight = "700"
+                    photoText.style.textAlign = "center"
+                    photoText.style.marginTop = "15px"
+                    
+                    // On efface le message après 5 secondes
+                    setTimeout(() => {
+                        photoText.innerHTML = ""
+                    }, 5000)
+                }
+
+                // --- MISE À JOUR DE L'INTERFACE --- //
+                
+                // On vide le formulaire
+                form.reset()
+                previewImg.style.display = "none"
+                const icon = document.querySelector(".add-photo-container i")
+                const label = document.querySelector(".add-photo-container label")
+                const textInfo = document.querySelector(".add-photo-container p")
+                if(icon) icon.style.display = "block"
+                if(label) label.style.display = "block"
+                if(textInfo) textInfo.style.display = "block"
+                
+                // // On ferme la modale
+                // const modal = document.querySelector("#modal")
+                // modal.style.display = "none"
+                // modal.setAttribute("aria-hidden", "true")
+
+                // On remet le bouton en gris
+                btnValidate.setAttribute("disabled", "true")
+                btnValidate.classList.remove("valid")
+
+                // On rafraîchit les galeries sans recharger la page
+                // On refait un fetch pour récupérer la nouvelle liste incluant la photo ajoutée
+                return fetch("http://localhost:5678/api/works")
+            } else {
+                alert("Erreur lors de l'ajout de la photo.")
+            }
+        })
+        .then(response => {
+            if (response) return response.json()
+        })
+        .then(data => {
+            // Si on a bien reçu les nouvelles données, on met à jour les deux galeries
+            if (data) {
+                generertravaux(data);       // Met à jour la page d'accueil
+                genererModalGallery(data);  // Met à jour la galerie de la modale
+            }
+        })
+        .catch(error => console.error("Erreur :", error))
+    })
 }
