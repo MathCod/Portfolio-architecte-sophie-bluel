@@ -101,7 +101,13 @@ export function genererModalGallery(listeTravaux) {
                         setTimeout(() => {
                             deleteText.innerHTML = ""
                         }, 5000)
-                    }
+                        }
+                        fetch("http://localhost:5678/api/works")
+                            .then(response => response.json())
+                            .then(data => {
+                                // On appelle la fonction qui gère la galerie principale
+                                generertravaux(data)
+                            })
                         } else {
                             alert("Erreur lors de la suppression")
                         }
@@ -355,7 +361,7 @@ export function setupAddPhoto() {
         formData.append("title", inputTitle.value)
         formData.append("category", selectCategory.value)
 
-        // CORRECTION : On lance le fetch directement (sans fonction async intermédiaire)
+        // On lance le fetch directement (sans fonction async intermédiaire)
         fetch("http://localhost:5678/api/works", {
             method: "POST",
             headers: {
