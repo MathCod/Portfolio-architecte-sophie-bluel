@@ -20,23 +20,26 @@ export function generertravaux(listeTravaux) {
     gallery.innerHTML = "" // Vider la galerie avant de la remplir
 
     // Pour chaque "work" dans "data"
-    for (const work of listeTravaux) {
-        // Création des balises
-        const figure = document.createElement("figure")
-        const img = document.createElement("img")
-        const figcaption = document.createElement("figcaption")
+    try { for (const work of listeTravaux) {
+            // Création des balises
+            const figure = document.createElement("figure")
+            const img = document.createElement("img")
+            const figcaption = document.createElement("figcaption")
 
-        // Remplir les informations
-        img.src = work.imageUrl // L'url de l'image
-        img.alt = work.title    // Le texte alternatif
-        figcaption.innerText = work.title // Le titre sous l'image
+            // Remplir les informations
+            img.src = work.imageUrl // L'url de l'image
+            img.alt = work.title    // Le texte alternatif
+            figcaption.innerText = work.title // Le titre sous l'image
 
-        // Assembler les balises
-        figure.appendChild(img)
-        figure.appendChild(figcaption)
+            // Assembler les balises
+            figure.appendChild(img)
+            figure.appendChild(figcaption)
 
-        // Mettre le tout dans "gallery"
-        gallery.appendChild(figure)
+            // Mettre le tout dans "gallery"
+            gallery.appendChild(figure)
+        }
+    } catch (error) {
+        alert("Erreur lors de la création du tableau des projets (generertravaux)")
     }
 }
 
@@ -48,72 +51,75 @@ export function genererModalGallery(listeTravaux) {
     const modalGallery = document.querySelector(".modal-gallery")
     modalGallery.innerHTML = "" // On vide d'abord
 
-    for (const work of listeTravaux) {
-        const figure = document.createElement("figure")
-        figure.classList.add("modal-figure")
+    try { for (const work of listeTravaux) {
+            const figure = document.createElement("figure")
+            figure.classList.add("modal-figure")
 
-        const img = document.createElement("img")
-        img.src = work.imageUrl
-        img.alt = work.title
+            const img = document.createElement("img")
+            img.src = work.imageUrl
+            img.alt = work.title
 
-        const iconContainer = document.createElement("div")
-        iconContainer.classList.add("trash-container")
-        
-        const icon = document.createElement("i")
-        icon.classList.add("fa-solid", "fa-trash-can")
+            const iconContainer = document.createElement("div")
+            iconContainer.classList.add("trash-container")
+            
+            const icon = document.createElement("i")
+            icon.classList.add("fa-solid", "fa-trash-can")
 
-        // Gestion du click sur la poubelle
-        iconContainer.addEventListener("click", (e) => {
-            e.preventDefault()
+            // Gestion du click sur la poubelle
+            iconContainer.addEventListener("click", (e) => {
+                e.preventDefault()
 
-            // Demande de confirmation
-            const confirmation = confirm("Voulez-vous vraiment supprimer ce projet ?")
-            if (confirmation) {
-                
-                // Récupération du Token (Indispensable pour avoir le droit de supprimer)
-                const token = localStorage.getItem("token")
+                // Demande de confirmation
+                const confirmation = confirm("Voulez-vous vraiment supprimer ce projet ?")
+                if (confirmation) {
+                    
+                    // Récupération du Token (Indispensable pour avoir le droit de supprimer)
+                    const token = localStorage.getItem("token")
 
-                // Requete DELETE à l'API
-                fetch(`http://localhost:5678/api/works/${work.id}`, {
-                    method: "DELETE",
-                    headers: {
-                        "Authorization": `Bearer ${token}`, // On montre le token
-                        "Content-Type": "application/json"
+                    // Requete DELETE à l'API
+                    fetch(`http://localhost:5678/api/works/${work.id}`, {
+                        method: "DELETE",
+                        headers: {
+                            "Authorization": `Bearer ${token}`, // On montre le token
+                            "Content-Type": "application/json"
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            // On supprime l'élément de la modale visuellement
+                            figure.remove()
+                            // alert("Projet supprimé avec succès !")
+                        const deleteText = document.querySelector(".delete-text")
+                        if (deleteText) {
+                        deleteText.innerHTML = "Projet supprimé avec succès !"
+                        deleteText.style.color = "#1D6154"
+                        deleteText.style.fontWeight = "700"
+                        deleteText.style.textAlign = "center"
+                        deleteText.style.marginTop = "15px"
+
+                        // On efface le message après 5 secondes
+                        setTimeout(() => {
+                            deleteText.innerHTML = ""
+                        }, 5000)
                     }
-                })
-                .then(response => {
-                    if (response.ok) {
-                        // On supprime l'élément de la modale visuellement
-                        figure.remove()
-                        // alert("Projet supprimé avec succès !")
-                    const deleteText = document.querySelector(".delete-text")
-                    if (deleteText) {
-                    deleteText.innerHTML = "Projet supprimé avec succès !"
-                    deleteText.style.color = "#1D6154"
-                    deleteText.style.fontWeight = "700"
-                    deleteText.style.textAlign = "center"
-                    deleteText.style.marginTop = "15px"
-
-                    // On efface le message après 5 secondes
-                    setTimeout(() => {
-                        deleteText.innerHTML = ""
-                    }, 5000)
+                        } else {
+                            alert("Erreur lors de la suppression")
+                        }
+                    })
+                    .catch(error => console.error("Erreur :", error))
                 }
-                    } else {
-                        alert("Erreur lors de la suppression")
-                    }
-                })
-                .catch(error => console.error("Erreur :", error))
-            }
-        })
-        // ----------------------------------------
+            })
+            // ----------------------------------------
 
 
-        iconContainer.appendChild(icon)
-        figure.appendChild(img)
-        figure.appendChild(iconContainer)
-        
-        modalGallery.appendChild(figure)
+            iconContainer.appendChild(icon)
+            figure.appendChild(img)
+            figure.appendChild(iconContainer)
+            
+            modalGallery.appendChild(figure)
+        }
+    } catch (error) {
+        alert("Erreur lors de la création des projets (genererModalGallery)")
     }
 }
 
@@ -148,54 +154,58 @@ export function activeButton(targetButton) {
 export function checkAdmin() {
     const token = localStorage.getItem("token")
     // Si l'utilisateur est connecté (token présent)
-    if (token) {
-    // On change "login" en "logout"
-    const loginLink = document.querySelector("#login-link")
-    loginLink.innerHTML = '<a href="#">logout</a>'
-    
-    // On gère la déconnexion au clic
-    loginLink.addEventListener("click", (e) => {
-        e.preventDefault()
-        localStorage.removeItem("token") // On supprime le token
-        window.location.reload() // On recharge la page (redevient visiteur)
-    })
+    try { if (token) {
+            // On change "login" en "logout"
+            const loginLink = document.querySelector("#login-link")
+            loginLink.innerHTML = '<a href="#">logout</a>'
+            
+            // On gère la déconnexion au clic
+            loginLink.addEventListener("click", (e) => {
+                e.preventDefault()
+                localStorage.removeItem("token") // On supprime le token
+                window.location.reload() // On recharge la page (redevient visiteur)
+            })
 
-    // On affiche la bannière noire
-    const banner = document.createElement("div")
-    banner.classList.add("admin-banner")
-    banner.innerHTML = `
-        <i class="fa-regular fa-pen-to-square"></i>
-        <span>Mode édition</span>
-    `
-    // On l'insère tout en haut du body (avant le header)
-    document.body.prepend(banner)
+            // On affiche la bannière noire
+            const banner = document.createElement("div")
+            banner.classList.add("admin-banner")
+            banner.innerHTML = `
+                <i class="fa-regular fa-pen-to-square"></i>
+                <span>Mode édition</span>
+                `
+            // On l'insère tout en haut du body (avant le header)
+            document.body.prepend(banner)
 
-    // On cache les filtres
-    const filters = document.querySelector(".filters")
-    if (filters) {
-        filters.style.display = "none"
-    }
+            // On cache les filtres
+            const filters = document.querySelector(".filters")
+            if (filters) {
+                filters.style.display = "none"
+            }
 
-    // On ajoute le bouton "Modifier" et ouverture de la Modale
-    const portfolioTitle = document.querySelector("#portfolio h2")
-    if (portfolioTitle) {
-        const modifyBtn = document.createElement("button")
-        modifyBtn.classList.add("modify-btn")
-        modifyBtn.innerHTML = '<i class="fa-regular fa-pen-to-square"></i> modifier'
-        
-        // On insère le bouton juste après le titre
-        portfolioTitle.appendChild(modifyBtn)
+            // On ajoute le bouton "Modifier" et ouverture de la Modale
+            const portfolioTitle = document.querySelector("#portfolio h2")
+            if (portfolioTitle) {
+                const modifyBtn = document.createElement("button")
+                modifyBtn.classList.add("modify-btn")
+                modifyBtn.innerHTML = '<i class="fa-regular fa-pen-to-square"></i> modifier'
+                
+                // On insère le bouton juste après le titre
+                portfolioTitle.appendChild(modifyBtn)
 
-        // Clic sur "Modifier" -> Ouvre la modale
-        modifyBtn.addEventListener("click", () => {
-            const modal = document.querySelector("#modal")
-            modal.style.display = "flex"
-            modal.setAttribute("aria-hidden", "false")
-        })
+                // Clic sur "Modifier" -> Ouvre la modale
+                modifyBtn.addEventListener("click", () => {
+                    const modal = document.querySelector("#modal")
+                    modal.style.display = "flex"
+                    modal.setAttribute("aria-hidden", "false")
+                })
+            }
+                // Initialisation de la fermeture de la modale
+                setupModal()
         }
-        // Initialisation de la fermeture de la modale
-        setupModal()
+    } catch (error) {
+        alert("erreur lors de la connexion (checkAdmin)")
     }
+
 }
 
 /**
@@ -345,12 +355,11 @@ export function setupAddPhoto() {
         formData.append("title", inputTitle.value)
         formData.append("category", selectCategory.value)
 
-        // Appel API
+        // CORRECTION : On lance le fetch directement (sans fonction async intermédiaire)
         fetch("http://localhost:5678/api/works", {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${token}`
-                //  Pas besoin de "Content-Type" ici, Le navigateur le fait tout seul pour le FormData
             },
             body: formData
         })
@@ -381,28 +390,25 @@ export function setupAddPhoto() {
                 if(icon) icon.style.display = "block"
                 if(label) label.style.display = "block"
                 if(textInfo) textInfo.style.display = "block"
-                
-                // // On ferme la modale
-                // const modal = document.querySelector("#modal")
-                // modal.style.display = "none"
-                // modal.setAttribute("aria-hidden", "true")
 
                 // On remet le bouton en gris
                 btnValidate.setAttribute("disabled", "true")
                 btnValidate.classList.remove("valid")
 
                 // On rafraîchit les galeries sans recharger la page
-                // On refait un fetch pour récupérer la nouvelle liste incluant la photo ajoutée
                 return fetch("http://localhost:5678/api/works")
             } else {
                 alert("Erreur lors de l'ajout de la photo.")
+                // Important : on rejette la promesse pour aller au catch si erreur API
+                return Promise.reject("Erreur API lors de l'ajout") 
             }
         })
         .then(response => {
-            if (response) return response.json()
+            // Si la réponse précédente était le fetch de rafraîchissement
+            if (response && response.ok) return response.json()
         })
         .then(data => {
-            // Si on a bien reçu les nouvelles données, on met à jour les deux galeries
+            // Si on a bien reçu les nouvelles données
             if (data) {
                 generertravaux(data)       // Met à jour la page d'accueil
                 genererModalGallery(data)  // Met à jour la galerie de la modale
