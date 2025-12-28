@@ -5,6 +5,9 @@
 
 import { 
     fetchCategories,
+    fetchWorks,
+    fetchWorksDelete,
+    sendWork
  } from "./API.js"
 
 /* -------------------------------------------------------------------------- */
@@ -15,7 +18,7 @@ import {
  * Génère et affiche la galerie de travaux dans le DOM.
  * @param {Array} listeTravaux - Le tableau d'objets contenant les travaux.
  */
-export function generertravaux(listeTravaux) {
+export async function generertravaux(listeTravaux) {
     const gallery = document.querySelector(".gallery")
     gallery.innerHTML = "" // Vider la galerie avant de la remplir
 
@@ -39,6 +42,7 @@ export function generertravaux(listeTravaux) {
             gallery.appendChild(figure)
         }
     } catch (error) {
+        console.error(error)
         alert("Erreur lors de la création du tableau des projets (generertravaux)")
     }
 }
@@ -51,81 +55,66 @@ export function genererModalGallery(listeTravaux) {
     const modalGallery = document.querySelector(".modal-gallery")
     modalGallery.innerHTML = "" // On vide d'abord
 
-    try { for (const work of listeTravaux) {
-            const figure = document.createElement("figure")
-            figure.classList.add("modal-figure")
+// On parcourt la liste
+    for (const work of listeTravaux) {
+        const figure = document.createElement("figure")
+        figure.classList.add("modal-figure")
 
-            const img = document.createElement("img")
-            img.src = work.imageUrl
-            img.alt = work.title
+        const img = document.createElement("img")
+        img.src = work.imageUrl
+        img.alt = work.title
 
-            const iconContainer = document.createElement("div")
-            iconContainer.classList.add("trash-container")
-            
-            const icon = document.createElement("i")
-            icon.classList.add("fa-solid", "fa-trash-can")
+        const iconContainer = document.createElement("div")
+        iconContainer.classList.add("trash-container")
+        
+        const icon = document.createElement("i")
+        icon.classList.add("fa-solid", "fa-trash-can")
 
-            // Gestion du click sur la poubelle
-            iconContainer.addEventListener("click", (e) => {
-                e.preventDefault()
+        // --- CORRECTION : Ajout de async ici pour utiliser await ---
+        iconContainer.addEventListener("click", async (e) => {
+            e.preventDefault()
 
-                // Demande de confirmation
-                const confirmation = confirm("Voulez-vous vraiment supprimer ce projet ?")
-                if (confirmation) {
+            const confirmation = confirm("Voulez-vous vraiment supprimer ce projet ?")
+            if (confirmation) {
+                const token = localStorage.getItem("token")
+
+                // --- CORRECTION 1 : On attend (await) la réponse de l'API ---
+                // Ton ancienne version ne l'attendait pas, donc le 'if' était toujours vrai
+                const isDeleted = await fetchWorksDelete(work.id, token)
+
+                if (isDeleted) {
+                    // A. On supprime visuellement de la modale (rapide)
+                    figure.remove()
                     
-                    // Récupération du Token (Indispensable pour avoir le droit de supprimer)
-                    const token = localStorage.getItem("token")
-
-                    // Requete DELETE à l'API
-                    fetch(`http://localhost:5678/api/works/${work.id}`, {
-                        method: "DELETE",
-                        headers: {
-                            "Authorization": `Bearer ${token}`, // On montre le token
-                            "Content-Type": "application/json"
-                        }
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            // On supprime l'élément de la modale visuellement
-                            figure.remove()
-                            // alert("Projet supprimé avec succès !")
-                        const deleteText = document.querySelector(".delete-text")
-                        if (deleteText) {
+                    // B. Message de succès
+                    const deleteText = document.querySelector(".delete-text")
+                    if (deleteText) {
                         deleteText.innerHTML = "Projet supprimé avec succès !"
                         deleteText.style.color = "#1D6154"
                         deleteText.style.fontWeight = "700"
                         deleteText.style.textAlign = "center"
                         deleteText.style.marginTop = "15px"
+                        setTimeout(() => { deleteText.innerHTML = "" }, 5000)
+                    }
 
-                        // On efface le message après 5 secondes
-                        setTimeout(() => {
-                            deleteText.innerHTML = ""
-                        }, 5000)
-                        }
-                        fetch("http://localhost:5678/api/works")
-                            .then(response => response.json())
-                            .then(data => {
-                                // On appelle la fonction qui gère la galerie principale
-                                generertravaux(data)
-                            })
-                        } else {
-                            alert("Erreur lors de la suppression")
-                        }
-                    })
-                    .catch(error => console.error("Erreur :", error))
+                    // --- CORRECTION 2 : Mise à jour de la galerie principale ---
+                    // On va chercher la nouvelle liste à jour sur le serveur
+                    const freshWorks = await fetchWorks()
+                    
+                    // On donne cette nouvelle liste à la fonction qui gère l'accueil
+                    generertravaux(freshWorks)
+
+                } else {
+                    alert("Erreur lors de la suppression")
                 }
-            })
-            // ----------------------------------------
+            }
+        })
 
-
-            iconContainer.appendChild(icon)
-            figure.appendChild(img)
-            figure.appendChild(iconContainer)
-            
-            modalGallery.appendChild(figure)
-        }
-    } catch (error) {
-        alert("Erreur lors de la création des projets (genererModalGallery)")
+        iconContainer.appendChild(icon)
+        figure.appendChild(img)
+        figure.appendChild(iconContainer)
+        
+        modalGallery.appendChild(figure)
     }
 }
 
@@ -137,7 +126,6 @@ export function genererModalGallery(listeTravaux) {
  * Gère l'état actif des boutons de filtre.
  * @param {HTMLElement} targetButton - Le bouton sur lequel on clique.
  */
-// Fonction pour gérer l'état actif des boutons de filtre
 export function activeButton(targetButton) {
     // On récupère tous les boutons
     const buttons = document.querySelectorAll(".filter-button")
@@ -351,75 +339,51 @@ export function setupAddPhoto() {
 
     const form = document.querySelector(".add-photo-form")
 
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
         e.preventDefault()
+        
         const token = localStorage.getItem("token")
-
-        // On crée un objet FormData pour envoyer le fichier + les textes
         const formData = new FormData()
         formData.append("image", inputPhoto.files[0])
         formData.append("title", inputTitle.value)
         formData.append("category", selectCategory.value)
 
-        // On lance le fetch directement (sans fonction async intermédiaire)
-        fetch("http://localhost:5678/api/works", {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            },
-            body: formData
-        })
-        .then(response => {
-            if (response.ok) {
-                const photoText = document.querySelector(".succes")
-                if (photoText) {
-                    photoText.innerHTML = "Projet ajouté avec succès !"
-                    photoText.style.color = "#1D6154"
-                    photoText.style.fontWeight = "700"
-                    photoText.style.textAlign = "center"
-                    photoText.style.marginTop = "15px"
-                    
-                    // On efface le message après 5 secondes
-                    setTimeout(() => {
-                        photoText.innerHTML = ""
-                    }, 5000)
-                }
+        try {
+            // Appel à l'API
+            await sendWork(formData, token)
 
-                // --- MISE À JOUR DE L'INTERFACE --- //
-                
-                // On vide le formulaire
-                form.reset()
-                previewImg.style.display = "none"
-                const icon = document.querySelector(".add-photo-container i")
-                const label = document.querySelector(".add-photo-container label")
-                const textInfo = document.querySelector(".add-photo-container p")
-                if(icon) icon.style.display = "block"
-                if(label) label.style.display = "block"
-                if(textInfo) textInfo.style.display = "block"
-
-                // On remet le bouton en gris
-                btnValidate.setAttribute("disabled", "true")
-                btnValidate.classList.remove("valid")
-
-                // On rafraîchit les galeries sans recharger la page
-                return fetch("http://localhost:5678/api/works")
-            } else {
-                alert("Erreur lors de l'ajout de la photo.")
-                // Important : on rejette la promesse pour aller au catch si erreur API
-                return Promise.reject("Erreur API lors de l'ajout") 
+            // --- SUCCÈS => Message vert ---
+            const photoText = document.querySelector(".succes")
+            if (photoText) {
+                photoText.innerHTML = "Projet ajouté avec succès !"
+                photoText.style.color = "#1D6154"
+                photoText.style.fontWeight = "700"
+                photoText.style.textAlign = "center"
+                photoText.style.marginTop = "15px"
+                setTimeout(() => { photoText.innerHTML = "" }, 5000)
             }
-        })
-        .then(response => {
-            // Si la réponse précédente était le fetch de rafraîchissement
-            if (response && response.ok) return response.json()
-        })
-        .then(data => {
-            // Si on a bien reçu les nouvelles données
-            if (data) {
-                generertravaux(data)       // Met à jour la page d'accueil
-                genererModalGallery(data)  // Met à jour la galerie de la modale
-            }
-        })
-        .catch(error => console.error("Erreur :", error))
+
+            // Reset Interface
+            form.reset()
+            previewImg.style.display = "none"
+            const icon = document.querySelector(".add-photo-container i")
+            const label = document.querySelector(".add-photo-container label")
+            const textInfo = document.querySelector(".add-photo-container p")
+            if(icon) icon.style.display = "block"
+            if(label) label.style.display = "block"
+            if(textInfo) textInfo.style.display = "block"
+
+            btnValidate.setAttribute("disabled", "true")
+            btnValidate.classList.remove("valid")
+
+            // Mise à jour des galeries
+            const freshWorks = await fetchWorks()
+            generertravaux(freshWorks)
+            genererModalGallery(freshWorks)
+
+        } catch (error) {
+            console.error(error)
+            alert("Erreur lors de l'ajout de la photo.")
+        }
     })
 }

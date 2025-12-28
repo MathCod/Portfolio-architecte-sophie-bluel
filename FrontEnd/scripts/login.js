@@ -4,56 +4,37 @@
  * Effectue l'appel API (POST), stocke le Token et redirige vers l'accueil.
  */
 
+import { loginUser } from "./API.js"
+
 // On sélectionne le formulaire
 const form = document.querySelector("#login-form")
 
-form.addEventListener("submit", (e) => {
+form.addEventListener("submit", async (e) => {
     e.preventDefault()
 
     // On récupère les valeurs des champs
     const email = document.querySelector("#email").value
     const password = document.querySelector("#password").value
 
-    // On prépare l'envoi
-    const chargeUtile = {
-        email: email,
-        password: password
-    }
+    try {
+        // Appel propre à l'API
+        const data = await loginUser(email, password);
+        
+        // Si on arrive ici, c'est que c'est réussi (sinon ça va dans le catch)
+        console.log("Connexion réussie !");
+        localStorage.setItem("token", data.token);
+        window.location.href = "index.html";
 
-    // On lance la requête POST
-    fetch("http://localhost:5678/api/users/login", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json" // On dit au serveur qu'on envoie du JSON
-        },
-        body: JSON.stringify(chargeUtile) // On transforme l'objet JS en texte JSON
-    })
-    .then(response => {
-        // Si le serveur ne répond pas "OK" (par exemple erreur 404)
-        if (!response.ok) {
-            // On lance une erreur pour aller direct au "catch"
-            throw new Error("Erreur dans l'identifiant ou le mot de passe")
-        }
-        return response.json()
-    })
-    .then(data => {
-        console.log("Connexion réussie ! Token :", data.token)
-
-        // On enregistre le token dans la mémoire du navigateur
-        localStorage.setItem("token", data.token)
-
-        // On redirige vers la page d'accueil
-        window.location.href = "index.html"
-    })
-    .catch(error => {
+    } catch (error) {
         // Gestion des erreurs
-        console.error(error)
-        let errorBalise = document.createElement("p")
-        let errorText = document.querySelector(".error-text")
-        errorText.innerHTML = "" // On vide tout ce qu'il y a dedans avant de recommencer
-        errorBalise.innerHTML = `E-mail ou mot de passe incorrect.`
-        errorBalise.style.color = "red"
-        errorBalise.style.fontStyle = "italic"
-        errorText.appendChild(errorBalise)
-    })
+        console.error(error);
+        const errorText = document.querySelector(".error-text");
+        errorText.innerHTML = ""; 
+        
+        const errorBalise = document.createElement("p");
+        errorBalise.innerHTML = `E-mail ou mot de passe incorrect.`;
+        errorBalise.style.color = "red";
+        errorBalise.style.fontStyle = "italic";
+        errorText.appendChild(errorBalise);
+    }
 })
