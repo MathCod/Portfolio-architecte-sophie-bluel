@@ -17,24 +17,24 @@ form.addEventListener("submit", async (e) => {
     const password = document.querySelector("#password").value
 
     try {
-        // Appel propre à l'API
-        const data = await loginUser(email, password);
+        // Appel à l'API
+        const data = await loginUser(email, password)
         
         // Si on arrive ici, c'est que c'est réussi (sinon ça va dans le catch)
-        console.log("Connexion réussie !");
-        localStorage.setItem("token", data.token);
-        window.location.href = "index.html";
+        console.log("Connexion réussie !")
+        localStorage.setItem("token", data.token)
+        window.location.href = "index.html"
 
     } catch (error) {
         // Gestion des erreurs
-        console.error(error);
-        const errorText = document.querySelector(".error-text");
-        errorText.innerHTML = ""; 
+        console.error(error)
+        const errorText = document.querySelector(".error-text")
+        errorText.innerHTML = ""
         
-        const errorBalise = document.createElement("p");
-        errorBalise.innerHTML = `E-mail ou mot de passe incorrect.`;
-        errorBalise.style.color = "red";
-        errorBalise.style.fontStyle = "italic";
-        errorText.appendChild(errorBalise);
+        const errorBalise = document.createElement("p")
+        errorBalise.innerHTML = `E-mail ou mot de passe incorrect.`
+        errorBalise.style.color = "red"
+        errorBalise.style.fontStyle = "italic"
+        errorText.appendChild(errorBalise)
     }
 })

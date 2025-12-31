@@ -70,7 +70,6 @@ export function genererModalGallery(listeTravaux) {
         const icon = document.createElement("i")
         icon.classList.add("fa-solid", "fa-trash-can")
 
-        // --- CORRECTION : Ajout de async ici pour utiliser await ---
         iconContainer.addEventListener("click", async (e) => {
             e.preventDefault()
 
@@ -78,15 +77,14 @@ export function genererModalGallery(listeTravaux) {
             if (confirmation) {
                 const token = localStorage.getItem("token")
 
-                // --- CORRECTION 1 : On attend (await) la réponse de l'API ---
-                // Ton ancienne version ne l'attendait pas, donc le 'if' était toujours vrai
+                // On attend (await) la réponse de l'API ---
                 const isDeleted = await fetchWorksDelete(work.id, token)
 
                 if (isDeleted) {
-                    // A. On supprime visuellement de la modale (rapide)
+                    // On supprime visuellement de la modale (rapide)
                     figure.remove()
                     
-                    // B. Message de succès
+                    // Message de succès
                     const deleteText = document.querySelector(".delete-text")
                     if (deleteText) {
                         deleteText.innerHTML = "Projet supprimé avec succès !"
@@ -97,7 +95,7 @@ export function genererModalGallery(listeTravaux) {
                         setTimeout(() => { deleteText.innerHTML = "" }, 5000)
                     }
 
-                    // --- CORRECTION 2 : Mise à jour de la galerie principale ---
+                    // Mise à jour de la galerie principale
                     // On va chercher la nouvelle liste à jour sur le serveur
                     const freshWorks = await fetchWorks()
                     
@@ -228,7 +226,7 @@ export function setupModal() {
 
     // Ecoute le clavier et ferme la modalle avec Echap
     window.addEventListener("keydown", function (e) {
-        // console.log(e.key) affiche la touche utilisée dans la console pour connaitre son nom
+        console.log(e.key) // affiche la touche utilisée dans la console pour connaitre son nom
     if (e.key === "Escape" || e.key === "Esc") {
         closeModal(e)
         }
