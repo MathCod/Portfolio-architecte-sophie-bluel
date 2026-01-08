@@ -3,6 +3,10 @@
  * @description Ce fichier contient le coeur de la page d'acceuil
  */
 
+// import 'dotenv/config'
+
+// console.log(process.env.URLAPI)
+
 import { 
     generertravaux, 
     activeButton, 
