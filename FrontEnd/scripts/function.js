@@ -30,7 +30,7 @@ export async function generertravaux(listeTravaux) {
             const figcaption = document.createElement("figcaption")
 
             // Remplir les informations
-            img.src = work.imageUrl // L'url de l'image
+            img.src = work.imageUrl.replace("http://localhost:5678", "https://backend-sophie-bluel-la4u.onrender.com")
             img.alt = work.title    // Le texte alternatif
             figcaption.innerText = work.title // Le titre sous l'image
 
@@ -61,7 +61,7 @@ export function genererModalGallery(listeTravaux) {
         figure.classList.add("modal-figure")
 
         const img = document.createElement("img")
-        img.src = work.imageUrl
+        img.src = work.imageUrl.replace("http://localhost:5678", "https://backend-sophie-bluel-la4u.onrender.com")
         img.alt = work.title
 
         const iconContainer = document.createElement("div")
