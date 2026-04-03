@@ -3,8 +3,6 @@
  * @description Ce fichier contient le coeur de la page d'acceuil
  */
 
-// import 'dotenv/config'
-
 import { 
     generertravaux, 
     activeButton, 
