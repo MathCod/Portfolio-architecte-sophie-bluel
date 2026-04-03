@@ -1,4 +1,4 @@
-const API_URL = "https://backend-sophie-bluel-la4u.onrender.com"
+const API_URL = "https://backend-sophie-bluel-la4u.onrender.com/api"
 
 /**
  * Récupère les travaux depuis l'API
