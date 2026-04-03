@@ -1,4 +1,4 @@
-fetch("http://localhost:5678/api/works")
+fetch("https://backend-sophie-bluel-la4u.onrender.com/api")
     .then(response => response.json())
     .then(data => {
         const gallery = document.querySelector(".gallery");
