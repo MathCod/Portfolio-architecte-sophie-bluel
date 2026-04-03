@@ -5,8 +5,6 @@
 
 // import 'dotenv/config'
 
-// console.log(process.env.URLAPI)
-
 import { 
     generertravaux, 
     activeButton, 
